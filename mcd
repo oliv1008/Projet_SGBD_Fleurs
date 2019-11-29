@@ -1,0 +1,44 @@
+fournisseur
+	idFournisseur
+	nom
+	prénom
+	adresse
+	produit[]
+
+client
+	idClient
+	nom
+	prénom
+	adresse
+	réduction
+
+produit
+	nom
+	catégorie (fleur ou plante)
+	espece
+	prix
+	stock
+
+factureFournisseur
+	idFactureFournisseur
+	idFournisseur
+	produit[]
+	montantFacture
+
+factureClient
+	idFactureClient
+	idClient
+	produit[]
+	montantFacture
+
+
+
+
+
+
+
+ACHAT FOURNISSEUR 
+
+VENTE CLIENT
+
+
