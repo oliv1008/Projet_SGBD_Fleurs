@@ -8,6 +8,14 @@ public class Produit {
 	private int prix;
 	private int stock;
 	
+	public Produit(String nom, String categorie, String espece, int prix, int stock) {
+		super();
+		this.nom = nom;
+		this.categorie = categorie;
+		this.espece = espece;
+		this.prix = prix;
+		this.stock = stock;
+	}
 	public String getNom() {
 		return nom;
 	}
