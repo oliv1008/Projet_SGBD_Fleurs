@@ -5,10 +5,19 @@ import java.util.ArrayList;
 public class Fournisseur {
 
 	private int idFournisseur;
-	private String Fournisseur;
+	private String nom;
 	private String prenom;
 	private String adresse;
 	private ArrayList<Produit> produits;
+	
+	
+	public Fournisseur(int idFournisseur, String nom, String prenom, String adresse) {
+		super();
+		this.idFournisseur = idFournisseur;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.adresse = adresse;
+	}
 	
 	public int getIdFournisseur() {
 		return idFournisseur;
@@ -16,11 +25,11 @@ public class Fournisseur {
 	public void setIdFournisseur(int idFournisseur) {
 		this.idFournisseur = idFournisseur;
 	}
-	public String getFournisseur() {
-		return Fournisseur;
+	public String getNom() {
+		return nom;
 	}
-	public void setFournisseur(String fournisseur) {
-		Fournisseur = fournisseur;
+	public void setNom(String nom) {
+		this.nom = nom;
 	}
 	public String getPrenom() {
 		return prenom;

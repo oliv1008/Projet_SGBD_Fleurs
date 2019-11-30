@@ -1,0 +1,24 @@
+ProduitDAO
+	> insererProduit(Produit p)
+	> supprimerProduit(String nom)
+	> mettreAJourQuantite(String nom, int modif)
+	> appliquerFactureFournisseur(FactureFournisseur f)
+	> appliquerFactureClient(FactureClient f)
+	> listeProduits() : ArrayList<Produit>
+
+ClientDAO
+	> insererClient(Client c)
+	> supprimerClient(int id)
+	> listeClients() : ArrayList<Client>
+
+FournisseurDAO
+	> insererFournisseur(Fournisseur f)
+	> supprimerFournisseur(int id)
+	> listeFournisseurs() : ArrayList<Fournisseur>
+	> listeProduitsParFournisseur(int id) : ArrayList<Produit>
+
+FactureClientDAO
+	> insererFacture(FactureClient f)
+
+FactureFournisseurDAO
+	> insererFacture(FactureFournisseur f)

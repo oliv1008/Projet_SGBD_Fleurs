@@ -6,8 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import misc.Settings;
+import model.FactureClient;
+import model.FactureFournisseur;
 import model.Produit;
 
 public class ProduitDAO {
@@ -50,7 +54,7 @@ public class ProduitDAO {
 			s.setString(2, produit.getCategorie());
 			s.setString(3, produit.getEspece());
 			s.setInt(4, produit.getPrix());
-			s.setInt(5, produit.getQuantite());
+			s.setInt(5, produit.getStock());
 			s.executeUpdate();
 			s.close();
 			System.out.println("Ajout d'un produit à la BDD");
@@ -93,6 +97,53 @@ public class ProduitDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<Produit> listeProduits(){
+		ArrayList<Produit> produits = new ArrayList<Produit>();
+		
+		try {
+			s = con.prepareStatement("SELECT * FROM Produit");
+			
+			ResultSet result = s.executeQuery();
+
+			while(result.next()){   
+				
+				produits.add(new Produit(
+						result.getString("nom"), 
+						result.getString("categorie"), 
+						result.getString("espece"),
+						result.getInt("prix"),
+						result.getInt("quantite")));
+			}
+
+			return produits;
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	/**
+	 * EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
+	 * @param facture
+	 */
+	public void appliquerFactureFournisseur(FactureFournisseur facture) {
+		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
+			mettreAJourQuantite(entry.getKey().getNom(), entry.getValue());
+		}
+	}
+	
+	/**
+	 * IDEM
+	 * @param facture
+	 */
+	public void appliquerFactureClient(FactureClient facture) {
+		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
+			mettreAJourQuantite(entry.getKey().getNom(), -entry.getValue());
 		}
 	}
 }

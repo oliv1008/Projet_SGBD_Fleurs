@@ -37,8 +37,24 @@ factureClient
 
 
 
-ACHAT FOURNISSEUR 
+ACHAT FOURNISSEUR
+affiche liste fournisseur		OK
+id fournisseur ?			-
+affiche liste plantes du fournisseur	OK
+boucle while avec :
+nom plante ? + quantite plante ?
+ok
+création factureFournisseur
+màj quantité plantes
 
 VENTE CLIENT
+affiche liste produits magasin
+boucle while avec :
+nom plante ? + quantite plante ?	WARNING : quantite choisie doit etre < a quantite dispo
+ok
+choix client
+création factureClien
+màj quantité plantes
+
 
 

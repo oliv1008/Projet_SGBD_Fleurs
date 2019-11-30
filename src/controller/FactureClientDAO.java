@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Statement;
+import java.util.Map.Entry;
 
 import misc.Settings;
+import model.FactureClient;
+import model.Produit;
 
 public class FactureClientDAO {
 
@@ -38,39 +41,46 @@ public class FactureClientDAO {
 	/*===== METHODS =====*/
 	
 	/**
-	 * Ajoute un livre au catalogue
-	 * @param isbn 
-	 * @param name 
-	 * @param author
+	 * Ajoute un facture client à la BDD
+	 * @param facture la facture à ajouter
 	 */
-	public void insertBook(int isbn, String name, String author) throws Exception {
+	public void insererFacture(FactureClient facture) {
 		try {
-			s = con.prepareStatement("INSERT INTO Book (isbn, name, author) VALUES (?, ?, ?)");
-			s.setInt(1, isbn);
-			s.setString(2, name);
-			s.setString(3, author);
+			s = con.prepareStatement(
+					"INSERT INTO FactureClient (idClient, montant) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+			
+			s.setInt(1, facture.getIdClient());
+			s.setInt(2, facture.getMontantFacture());
 			s.executeUpdate();
+			
+			int idFactureClient = s.getGeneratedKeys().getInt(1);
+			
 			s.close();
-			System.out.println("Ajout d'un livre à la BDD");
-		} catch(SQLIntegrityConstraintViolationException e) {
-			throw new Exception("Ce livre (" + isbn + ") est déjà dans la bibliothèque");
+			
+			for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
+					s = con.prepareStatement(
+							"INSERT INTO ProduitsFactureClient (idFactureClient, nomProduit, quantite) VALUES (?, ?, ?)");
+					
+					s.setInt(1, idFactureClient);
+					s.setString(2, entry.getKey().getNom());
+					s.setInt(3, entry.getValue());
+					s.executeUpdate();
+					
+					s.close();
+			}
+			
+			con.commit();	// Est ce que y'a vrmt besoin du commit ?
+			
+			System.out.println("Ajout d'une facture client à la BDD");
+			
 		} catch(SQLException e) {
 			e.printStackTrace();
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
-	}
-	
-	/**
-	 * Supprime un livre de la BDD
-	 * @param isbn l'isbn du livre
-	 */
-	public void deleteBook(int isbn) {
-		try {
-			s = con.prepareStatement("DELETE FROM Book WHERE isbn = " + isbn);
-			s.executeUpdate();
-			s.close();
-			System.out.println("Suppression d'un livre de la BDD");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
+		
 	}
 }
