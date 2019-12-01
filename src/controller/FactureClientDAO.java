@@ -3,6 +3,7 @@ package controller;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map.Entry;
@@ -33,13 +34,12 @@ public class FactureClientDAO {
 		}
 		catch(SQLException e) {
 			System.err.println("Impossible de se connecter au serveur SQL");
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
 
 	/*===== METHODS =====*/
-	
+
 	/**
 	 * Ajoute un facture client à la BDD
 	 * @param facture la facture à ajouter
@@ -48,39 +48,41 @@ public class FactureClientDAO {
 		try {
 			s = con.prepareStatement(
 					"INSERT INTO FactureClient (idClient, montant) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-			
+
 			s.setInt(1, facture.getIdClient());
 			s.setInt(2, facture.getMontantFacture());
 			s.executeUpdate();
+
+			ResultSet result = s.getGeneratedKeys();
 			
-			int idFactureClient = s.getGeneratedKeys().getInt(1);
+			int idFactureClient = 0;
 			
-			s.close();
-			
-			for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
-					s = con.prepareStatement(
-							"INSERT INTO ProduitsFactureClient (idFactureClient, nomProduit, quantite) VALUES (?, ?, ?)");
-					
-					s.setInt(1, idFactureClient);
-					s.setString(2, entry.getKey().getNom());
-					s.setInt(3, entry.getValue());
-					s.executeUpdate();
-					
-					s.close();
+			if(result.next()) {
+				idFactureClient = result.getInt(1);
 			}
-			
-			con.commit();	// Est ce que y'a vrmt besoin du commit ?
-			
+
+			s.close();
+
+			for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
+				s = con.prepareStatement(
+						"INSERT INTO ProduitsFactureClient (idFactureClient, nomProduit, quantite) VALUES (?, ?, ?)");
+
+				s.setInt(1, idFactureClient);
+				s.setString(2, entry.getKey().getNom());
+				s.setInt(3, entry.getValue());
+				s.executeUpdate();
+
+				s.close();
+			}
+
+//			con.commit();	// Est ce que y'a vrmt besoin du commit ?
+
 			System.out.println("Ajout d'une facture client à la BDD");
-			
+
 		} catch(SQLException e) {
 			e.printStackTrace();
-			try {
-				con.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
+//			con.rollback(); ?
 		}
-		
+
 	}
 }

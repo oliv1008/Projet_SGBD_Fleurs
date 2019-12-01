@@ -36,7 +36,6 @@ public class ProduitDAO {
 		}
 		catch(SQLException e) {
 			System.err.println("Impossible de se connecter au serveur SQL");
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -66,8 +65,8 @@ public class ProduitDAO {
 	}
 
 	/**
-	 * Supprime un livre de la BDD
-	 * @param nom le nom du livre
+	 * Supprime un produit de la BDD
+	 * @param nom le nom du produit
 	 */
 	public void supprimerProduit(String nom) {
 		try {
@@ -81,6 +80,11 @@ public class ProduitDAO {
 		}
 	}
 
+	/**
+	 * Met à jour la quantité d'un produit dans la BDD
+	 * @param nom le nom du produit
+	 * @param modification la modification de quantité, positive ou négative
+	 */
 	public void mettreAJourQuantite(String nom, int modification) {
 		try {
 			s = con.prepareStatement("SELECT * FROM Produit WHERE nom = ?", 
@@ -91,25 +95,31 @@ public class ProduitDAO {
 
 			ResultSet result = s.executeQuery();
 
-			int quantite = result.getInt("quantite");
-			result.updateInt("quantite", quantite + modification);
-			result.updateRow();
+			if(result.next()) {
+				int quantite = result.getInt("quantite");
+				result.updateInt("quantite", quantite + modification);
+				result.updateRow();
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Renvoie la liste de tous les produits du magasin
+	 * @return la liste des produits
+	 */
 	public ArrayList<Produit> listeProduits(){
 		ArrayList<Produit> produits = new ArrayList<Produit>();
-		
+
 		try {
 			s = con.prepareStatement("SELECT * FROM Produit");
-			
+
 			ResultSet result = s.executeQuery();
 
 			while(result.next()){   
-				
+
 				produits.add(new Produit(
 						result.getString("nom"), 
 						result.getString("categorie"), 
@@ -123,23 +133,27 @@ public class ProduitDAO {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
 	/**
-	 * EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
-	 * @param facture
+	 * Pour chaque produit acheté à un fournisseur, met à jour la quantité dans le magasin
+	 * @see mettreAJourQuantite
+	 * @param facture la facture fournisseur
+	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
 	 */
 	public void appliquerFactureFournisseur(FactureFournisseur facture) {
 		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
 			mettreAJourQuantite(entry.getKey().getNom(), entry.getValue());
 		}
 	}
-	
+
 	/**
-	 * IDEM
-	 * @param facture
+	 * Pour chaque produit vendu à un client, met à jour la quantité dans le magasin
+	 * @see mettreAJourQuantite
+	 * @param facture la facture client
+	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
 	 */
 	public void appliquerFactureClient(FactureClient facture) {
 		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {

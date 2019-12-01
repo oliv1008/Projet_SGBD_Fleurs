@@ -34,7 +34,6 @@ public class FournisseurDAO {
 		}
 		catch(SQLException e) {
 			System.err.println("Impossible de se connecter au serveur SQL");
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -89,7 +88,7 @@ public class FournisseurDAO {
 						result.getInt("idFournisseur"), 
 						result.getString("nom"), 
 						result.getString("prenom"),
-						result.getString("addresse")));
+						result.getString("adresse")));
 			}
 
 			return fournisseurs;

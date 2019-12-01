@@ -1,30 +1,23 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class FactureClient {
 
-	private int idFactureClient;
+	/*===== ATTRIBUTES =====*/
 	private int idClient;
 	private int montantFacture;
 	private HashMap<Produit, Integer> produits;
 	
-	public FactureClient(int idFactureClient, int idClient, int montantFacture, HashMap<Produit, Integer> produits) {
+	/*===== BUILDER =====*/
+	public FactureClient() {
 		super();
-		this.idFactureClient = idFactureClient;
-		this.idClient = idClient;
-		this.montantFacture = montantFacture;
-		this.produits = produits;
-	}
-
-	public int getIdFactureClient() {
-		return idFactureClient;
+		montantFacture = 0;
+		produits = new HashMap<Produit, Integer>();
 	}
 	
-	public void setIdFactureClient(int idFactureClient) {
-		this.idFactureClient = idFactureClient;
-	}
-	
+	/*===== GETTERS AND SETTERS =====*/
 	public int getIdClient() {
 		return idClient;
 	}
@@ -37,17 +30,24 @@ public class FactureClient {
 		return produits;
 	}
 	
-	public void setProduits(HashMap<Produit, Integer> produits) {
-		this.produits = produits;
+	public void ajouterProduit(Produit produit, Integer quantite) {
+		if(produits.containsKey(produit)) {
+			int ancienneQte = produits.get(produit);
+			produits.put(produit, quantite + ancienneQte);
+		}
+		else {
+			produits.put(produit, quantite);
+		}		
 	}
 	
 	public int getMontantFacture() {
 		return montantFacture;
 	}
 	
-	public void setMontantFacture(int montantFacture) {
-		this.montantFacture = montantFacture;
+	public void calculMontantFacture() {
+		for(Entry<Produit, Integer> entry : produits.entrySet()) {
+			montantFacture += entry.getValue() * entry.getKey().getPrix();
+		}
 	}
-	
 	
 }

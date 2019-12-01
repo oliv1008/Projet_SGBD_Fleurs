@@ -34,7 +34,6 @@ public class ClientDAO {
 		}
 		catch(SQLException e) {
 			System.err.println("Impossible de se connecter au serveur SQL");
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
