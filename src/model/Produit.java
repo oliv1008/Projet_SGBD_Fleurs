@@ -53,6 +53,7 @@ public class Produit {
 		this.stock += modif;
 	}
 	
+	@Override
 	public String toString() {
 		return nom + " (" + prix + "€/u)";
 	}

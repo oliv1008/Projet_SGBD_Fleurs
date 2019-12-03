@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import misc.Settings;
 import model.Client;
-import model.Produit;
 
 public class ClientDAO {
 
@@ -101,6 +100,30 @@ public class ClientDAO {
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	public Client getClientById(int id) {
+		try {
+			s = con.prepareStatement("SELECT * FROM Client WHERE idClient = ?");
+			s.setInt(1, id);
+
+			ResultSet result = s.executeQuery();
+
+			while(result.next()){   
+
+				return new Client(
+						result.getInt("idClient"), 
+						result.getString("nom"), 
+						result.getString("prenom"),
+						result.getString("adresse"),
+						result.getFloat("reduction"));
+			}
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 }

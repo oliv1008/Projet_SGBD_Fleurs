@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -25,18 +23,22 @@ import model.Client;
 import model.FactureClient;
 import model.Produit;
 
+/**
+ * Panel de création de factures client
+ */
 public class FactureClientPanel extends JPanel {
 
-	JLog log = new JLog();
-	JComboBox<Client> comboBoxClient;
-	JComboBox<Produit> comboBoxProduit;
-	SpinnerNumberModel spinnerModel;
+	/*===== ATTRIBUTES =====*/
+	JLog log = new JLog();				// Panel d'affichage de la facture
+	JComboBox<Client> comboBoxClient;	// ComboBox de sélection du client
+	JComboBox<Produit> comboBoxProduit;	// ComboBox de sélection des produits
+	SpinnerNumberModel spinnerModel;	// SpinnerModel de sélection de la quantité
+	JButton addButton;					// Bouton "Ajouter"
+	JButton creerFacture;				// Bouton "Créer facture"
 	
-	JButton addButton;
-	JButton creerFacture;
-	
-	FactureClient facture = new FactureClient();
+	FactureClient facture = new FactureClient();	// Facture
 
+	/*===== BUILDER =====*/
 	public FactureClientPanel() {
 
 		setLayout(new GridLayout(2, 2, 10, 10));
@@ -52,8 +54,7 @@ public class FactureClientPanel extends JPanel {
 
 	// ----- MENU DE CHOIX DU CLIENT -----------------------------------
 	private void addClientChoicePanel() {
-		JPanel clientChoicePanel = new JPanel();
-		clientChoicePanel.setLayout(new BorderLayout());
+		JPanel clientChoicePanel = new JPanel(new BorderLayout());
 		clientChoicePanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Choix du client"
@@ -74,6 +75,7 @@ public class FactureClientPanel extends JPanel {
 
 		// On ajoute un action listener qui met à jour la facture
 		comboBoxClient.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				if(comboBoxClient.getSelectedItem() == null) {
 					log.clear();
@@ -103,8 +105,7 @@ public class FactureClientPanel extends JPanel {
 
 	// ----- AFFICHAGE DE LA FACTURE -----------------------------------
 	private void addFactureInfosPanel() {
-		JPanel factureInfosPanel = new JPanel();
-		factureInfosPanel.setLayout(new BorderLayout());
+		JPanel factureInfosPanel = new JPanel(new BorderLayout());
 		factureInfosPanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Informations facture"
@@ -120,8 +121,7 @@ public class FactureClientPanel extends JPanel {
 
 	// ----- MENU DE CHOIX DES PRODUITS -----------------------------------
 	private void addProduitsChoicePanel() {
-		JPanel produitsChoicePanel = new JPanel();
-		produitsChoicePanel.setLayout(new BorderLayout());
+		JPanel produitsChoicePanel = new JPanel(new BorderLayout());
 		produitsChoicePanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Produits disponibles"
@@ -141,7 +141,9 @@ public class FactureClientPanel extends JPanel {
 
 		// On ajoute un action listener qui met à jour le Spinner 
 		comboBoxProduit.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
+				// On récupère la quantité dispo pour le produit selectionné
 				int quantite = ((Produit)(comboBoxProduit.getSelectedItem())).getStock();
 				if(quantite == 0) {							// Si la quantité vaut 0 :
 					spinnerModel.setValue(0);				// On fixe le spinner à 0
@@ -167,7 +169,7 @@ public class FactureClientPanel extends JPanel {
 		label2.setPreferredSize(new Dimension(90, 25));
 		south.add(label2);
 
-		// NumberSpinner représentant la quantité achetée
+		// Spinner représentant la quantité achetée
 		spinnerModel = new SpinnerNumberModel(1, 1, null, 1);
 		JSpinner spinner = new JSpinner(spinnerModel);
 		spinner.setPreferredSize(new Dimension(40, 25));
@@ -180,11 +182,15 @@ public class FactureClientPanel extends JPanel {
 
 		// On ajoute un action listener qui met à jour la facture
 		addButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
-				// On met à jour l'affichage de la facture
-				log.append("- " + comboBoxProduit.getSelectedItem().toString() + "\t(x" + spinnerModel.getValue() + ")");
 				Produit produit = (Produit)(comboBoxProduit.getSelectedItem());
 				Integer quantite = (Integer)spinnerModel.getValue();
+				
+				// On met à jour l'affichage de la facture
+				log.append("- " + produit + "\t(x" + quantite + ")");
+				
+				// On met à jour le stock pour ce produit
 				produit.changeStock(-quantite);
 				comboBoxProduit.setSelectedIndex(0);
 				
@@ -205,8 +211,7 @@ public class FactureClientPanel extends JPanel {
 
 	// ----- BOUTONS  -----------------------------------
 	private void addActionsPanel() {
-		JPanel actionsPanel = new JPanel();
-		actionsPanel.setLayout(new BorderLayout());
+		JPanel actionsPanel = new JPanel(new BorderLayout());
 		actionsPanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Actions"
@@ -221,15 +226,18 @@ public class FactureClientPanel extends JPanel {
 		creerFacture.setPreferredSize(new Dimension(240, 25));
 		
 		creerFacture.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
-				// On met à jour l'objet facture
-				facture.calculMontantFacture();
+				// On récupère la réduction du client selectionné
+				int reduction = (int)(100.0*((Client)comboBoxClient.getSelectedItem()).getReduction());
 				
 				// On met à jour l'affichage de la facture
 				log.append("");
-				log.append("Montant total = " + facture.getMontantFacture() + "€");
+				log.append("Montant brut : \t\t" + facture.calculMontantBrut() + "€");
+				log.append("Avec réduction (- " + reduction + "%) : \t" + facture.calculReduction(((Client)comboBoxClient.getSelectedItem()).getReduction()) + "€");
+				log.append("Montant total (TVA 15%) : \t" + facture.calculTVA() + "€");
 				log.append("");
-				log.append("Facture payée le " + (LocalDateTime.now()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'à' HH:mm")));
+				log.append("Facture enregistrée");
 			
 				// On ajoute la facture à la BDD
 				(new FactureClientDAO()).insererFacture(facture);
@@ -245,12 +253,12 @@ public class FactureClientPanel extends JPanel {
 		resetFacture.setPreferredSize(new Dimension(240, 25));
 		
 		resetFacture.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				facture = new FactureClient();
 				log.clear();
 				comboBoxClient.setSelectedIndex(0);
 				comboBoxProduit.setSelectedIndex(0);
-				
 				creerFacture.setEnabled(true);
 			}
 		});

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import misc.Settings;
@@ -54,14 +55,16 @@ public class FactureClientDAO {
 			s.executeUpdate();
 
 			ResultSet result = s.getGeneratedKeys();
-			
+
 			int idFactureClient = 0;
-			
+
 			if(result.next()) {
 				idFactureClient = result.getInt(1);
 			}
 
 			s.close();
+
+			ProduitDAO produitDAO = new ProduitDAO();
 
 			for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
 				s = con.prepareStatement(
@@ -73,16 +76,62 @@ public class FactureClientDAO {
 				s.executeUpdate();
 
 				s.close();
+
+				produitDAO.mettreAJourQuantite(entry.getKey().getNom(), -entry.getValue());	
 			}
 
-//			con.commit();	// Est ce que y'a vrmt besoin du commit ?
+			//			con.commit();	// Est ce que y'a vrmt besoin du commit ?
 
 			System.out.println("Ajout d'une facture client à la BDD");
 
 		} catch(SQLException e) {
 			e.printStackTrace();
-//			con.rollback(); ?
+			//			con.rollback(); ?
+		}
+	}
+
+	public ArrayList<FactureClient> listeFactureClient(){
+		
+		ArrayList<FactureClient> factures = new ArrayList<FactureClient>();
+
+		try {
+			s = con.prepareStatement("SELECT FactureClient.idFactureClient, Client.idClient "
+					+ "FROM Client, FactureClient "
+					+ "WHERE Client.idClient = FactureClient.idClient");
+
+			ResultSet result = s.executeQuery();
+			
+			int idFacture = 0;
+
+			while(result.next()){   
+				
+				idFacture = result.getInt("FactureClient.idFactureClient");
+				
+				FactureClient facture = new FactureClient();
+				facture.setIdFacture(result.getInt("FactureClient.idFactureClient"));
+				facture.setIdClient(result.getInt("Client.idClient"));
+				
+				PreparedStatement s2 = con.prepareStatement("SELECT nomProduit, quantite "
+						+ "FROM ProduitsFactureClient WHERE idFactureClient = ?");
+				
+				s2.setInt(1, idFacture);
+				
+				ResultSet result2 = s2.executeQuery();
+				
+				while(result2.next()) {
+					Produit p = (new ProduitDAO()).getProduitByName(result2.getString("nomProduit"));
+					facture.ajouterProduit(p, result2.getInt("quantite"));
+				}
+				
+				factures.add(facture);		
+			}
+
+			return factures;
+
+		} catch(SQLException e) {
+			e.printStackTrace();
 		}
 
+		return null;
 	}
 }

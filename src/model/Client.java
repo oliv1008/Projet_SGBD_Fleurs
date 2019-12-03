@@ -37,6 +37,7 @@ public class Client {
 		return reduction;
 	}
 	
+	@Override
 	public String toString() {
 		return idClient + " - " + prenom + " " + nom;
 	}

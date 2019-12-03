@@ -6,6 +6,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+/**
+ * Classe utilisée pour afficher du texte
+ */
 public class JLog extends JPanel {
 
 	private JTextArea textArea = new JTextArea(14, 20);

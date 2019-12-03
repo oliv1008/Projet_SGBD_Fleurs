@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -24,18 +22,22 @@ import model.FactureFournisseur;
 import model.Fournisseur;
 import model.Produit;
 
+/**
+ * Panel de création de factures fournisseur
+ */
 public class FactureFournisseurPanel extends JPanel {
 
-	JLog log = new JLog();
-	JComboBox<Fournisseur> comboBoxFournisseur;
-	JComboBox<Produit> comboBoxProduit;
-	SpinnerNumberModel spinnerModel;
+	/*===== ATTRIBUTES =====*/
+	JLog log = new JLog();						// Panel d'affichage de la facture
+	JComboBox<Fournisseur> comboBoxFournisseur;	// ComboBox de sélection du fournisseur
+	JComboBox<Produit> comboBoxProduit;			// ComboBox de sélection des produits
+	SpinnerNumberModel spinnerModel;			// Spinner de sélection de la quantité
+	JButton addButton;							// Bouton "Ajouter"
+	JButton creerFacture;						// Bouton "Créer facture"
 
-	JButton addButton;
-	JButton creerFacture;
+	FactureFournisseur facture = new FactureFournisseur();	// Facture
 
-	FactureFournisseur facture = new FactureFournisseur();
-
+	/*===== BUILDER =====*/
 	public FactureFournisseurPanel() {
 
 		setLayout(new GridLayout(2, 2, 10, 10));
@@ -51,8 +53,7 @@ public class FactureFournisseurPanel extends JPanel {
 
 	// ----- MENU DE CHOIX DU CLIENT -----------------------------------
 	private void addFournisseurChoicePanel() {
-		JPanel fournisseurChoicePanel = new JPanel();
-		fournisseurChoicePanel.setLayout(new BorderLayout());
+		JPanel fournisseurChoicePanel = new JPanel(new BorderLayout());
 		fournisseurChoicePanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Choix du fournisseur"
@@ -73,6 +74,7 @@ public class FactureFournisseurPanel extends JPanel {
 
 		// On ajoute un action listener qui met à jour la facture
 		comboBoxFournisseur.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				if(comboBoxFournisseur.getSelectedItem() == null) {
 					log.clear();
@@ -104,8 +106,7 @@ public class FactureFournisseurPanel extends JPanel {
 
 	// ----- AFFICHAGE DE LA FACTURE -----------------------------------
 	private void addFactureInfosPanel() {
-		JPanel factureInfosPanel = new JPanel();
-		factureInfosPanel.setLayout(new BorderLayout());
+		JPanel factureInfosPanel = new JPanel(new BorderLayout());
 		factureInfosPanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Informations facture"
@@ -121,8 +122,7 @@ public class FactureFournisseurPanel extends JPanel {
 
 	// ----- MENU DE CHOIX DES PRODUITS -----------------------------------
 	private void addProduitsChoicePanel() {
-		JPanel produitsChoicePanel = new JPanel();
-		produitsChoicePanel.setLayout(new BorderLayout());
+		JPanel produitsChoicePanel = new JPanel(new BorderLayout());
 		produitsChoicePanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Produits disponibles"
@@ -162,11 +162,14 @@ public class FactureFournisseurPanel extends JPanel {
 
 		// On ajoute un action listener qui met à jour la facture
 		addButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
-				// On met à jour l'affichage de la facture
-				log.append("- " + comboBoxProduit.getSelectedItem().toString() + "\t(x" + spinnerModel.getValue() + ")");
 				Produit produit = (Produit)(comboBoxProduit.getSelectedItem());
 				Integer quantite = (Integer)spinnerModel.getValue();
+				
+				// On met à jour l'affichage de la facture
+				log.append("- " + produit + "\t(x" + quantite + ")");
+				
 				comboBoxProduit.setSelectedIndex(0);
 
 				// On met à jour l'object facture
@@ -183,8 +186,7 @@ public class FactureFournisseurPanel extends JPanel {
 
 	// ----- BOUTONS  -----------------------------------
 	private void addActionsPanel() {
-		JPanel actionsPanel = new JPanel();
-		actionsPanel.setLayout(new BorderLayout());
+		JPanel actionsPanel = new JPanel(new BorderLayout());
 		actionsPanel.setPreferredSize(new Dimension(250, 250));
 
 		// Label "Actions"
@@ -199,6 +201,7 @@ public class FactureFournisseurPanel extends JPanel {
 		creerFacture.setPreferredSize(new Dimension(240, 25));
 
 		creerFacture.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				// On met à jour l'objet facture
 				facture.calculMontantFacture();
@@ -207,7 +210,7 @@ public class FactureFournisseurPanel extends JPanel {
 				log.append("");
 				log.append("Montant total = " + facture.getMontantFacture() + "€");
 				log.append("");
-				log.append("Facture payée le " + (LocalDateTime.now()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'à' HH:mm")));
+				log.append("Facture enregistrée");
 
 				// On ajoute la facture à la BDD
 				(new FactureFournisseurDAO()).insererFacture(facture);
@@ -223,11 +226,11 @@ public class FactureFournisseurPanel extends JPanel {
 		resetFacture.setPreferredSize(new Dimension(240, 25));
 
 		resetFacture.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				facture = new FactureFournisseur();
 				log.clear();
 				comboBoxFournisseur.setSelectedIndex(0);
-
 				creerFacture.setEnabled(true);
 			}
 		});
@@ -239,11 +242,19 @@ public class FactureFournisseurPanel extends JPanel {
 		add(actionsPanel);
 	}
 
+	/**
+	 * Met à jour la liste des produits proposés par un fournisseur
+	 */
 	private void updateComboBoxProduit() {
+		// Reset la comboBox
 		comboBoxProduit.removeAllItems();
+		
+		// Si un fournisseur est selectionné
 		if(comboBoxFournisseur.getSelectedItem() !=  null) {
-			comboBoxProduit.removeAllItems();
+			// Récupère son id
 			int idFournisseur = ((Fournisseur)comboBoxFournisseur.getSelectedItem()).getIdFournisseur();
+			
+			// Ajoute chaque produit qu'il fournit à la comboBox
 			ArrayList<Produit> produits = (new FournisseurDAO()).listeProduitsParFournisseur(idFournisseur);
 			for(Produit p : produits) {
 				comboBoxProduit.addItem(p);

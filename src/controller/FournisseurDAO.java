@@ -129,4 +129,27 @@ public class FournisseurDAO {
 		
 		return null;
 	}
+	
+	public Fournisseur getFournisseurById(int id) {
+		try {
+			s = con.prepareStatement("SELECT * FROM Fournisseur WHERE idFournisseur = ?");
+			s.setInt(1, id);
+
+			ResultSet result = s.executeQuery();
+
+			while(result.next()){   
+
+				return new Fournisseur(
+						result.getInt("idFournisseur"), 
+						result.getString("nom"), 
+						result.getString("prenom"),
+						result.getString("adresse"));
+			}
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

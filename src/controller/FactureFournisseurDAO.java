@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import misc.Settings;
@@ -62,6 +63,8 @@ public class FactureFournisseurDAO {
 			}
 
 			s.close();
+			
+			ProduitDAO produitDAO = new ProduitDAO();
 
 			for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
 				s = con.prepareStatement(
@@ -71,8 +74,10 @@ public class FactureFournisseurDAO {
 				s.setString(2, entry.getKey().getNom());
 				s.setInt(3, entry.getValue());
 				s.executeUpdate();
-
+				
 				s.close();
+				
+				produitDAO.mettreAJourQuantite(entry.getKey().getNom(), +entry.getValue());		
 			}
 
 //			con.commit();	// Est ce que y'a vrmt besoin du commit ?
@@ -83,6 +88,50 @@ public class FactureFournisseurDAO {
 			e.printStackTrace();
 //			con.rollback();
 		}
+	}
+	
+	public ArrayList<FactureFournisseur> listeFactureFournisseur(){
+		
+		ArrayList<FactureFournisseur> factures = new ArrayList<FactureFournisseur>();
 
+		try {
+			s = con.prepareStatement("SELECT FactureFournisseur.idFactureFournisseur, Fournisseur.idFournisseur "
+					+ "FROM Fournisseur, FactureFournisseur "
+					+ "WHERE Fournisseur.idFournisseur = FactureFournisseur.idFournisseur");
+
+			ResultSet result = s.executeQuery();
+			
+			int idFacture = 0;
+
+			while(result.next()){   
+				
+				idFacture = result.getInt("FactureFournisseur.idFactureFournisseur");
+				
+				FactureFournisseur facture = new FactureFournisseur();
+				facture.setIdFacture(idFacture);
+				facture.setIdFournisseur(result.getInt("Fournisseur.idFournisseur"));
+				
+				PreparedStatement s2 = con.prepareStatement("SELECT nomProduit, quantite "
+						+ "FROM ProduitsFactureFournisseur WHERE idFactureFournisseur = ?");
+				
+				s2.setInt(1, idFacture);
+				
+				ResultSet result2 = s2.executeQuery();
+				
+				while(result2.next()) {
+					Produit p = (new ProduitDAO()).getProduitByName(result2.getString("nomProduit"));
+					facture.ajouterProduit(p, result2.getInt("quantite"));
+				}
+				
+				factures.add(facture);		
+			}
+
+			return factures;
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

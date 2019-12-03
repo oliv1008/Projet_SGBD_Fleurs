@@ -31,6 +31,7 @@ public class Fournisseur {
 		return adresse;
 	}
 	
+	@Override
 	public String toString() {
 		return idFournisseur + " - " + prenom + " " + nom;
 	}

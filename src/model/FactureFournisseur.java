@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 public class FactureFournisseur {
 
 	/*===== ATTRIBUTES =====*/
+	private int idFacture;
 	private int idFournisseur;
 	private int montantFacture;
 	private HashMap<Produit, Integer> produits;
@@ -18,12 +19,16 @@ public class FactureFournisseur {
 	}
 	
 	/*===== GETTERS AND SETTERS =====*/
+	public void setIdFacture(int idFacture) {
+		this.idFacture = idFacture;
+	}
+	
 	public int getIdFournisseur() {
 		return idFournisseur;
 	}
 	
-	public void setIdFournisseur(int idClient) {
-		this.idFournisseur = idClient;
+	public void setIdFournisseur(int idFournisseur) {
+		this.idFournisseur = idFournisseur;
 	}
 	
 	public HashMap<Produit, Integer> getProduits() {
@@ -48,6 +53,11 @@ public class FactureFournisseur {
 		for(Entry<Produit, Integer> entry : produits.entrySet()) {
 			montantFacture += entry.getValue() * entry.getKey().getPrix();
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "Facture #" + idFacture + " (Fournisseur #" + idFournisseur + ")";
 	}
 	
 }

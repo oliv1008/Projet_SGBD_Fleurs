@@ -7,11 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Map.Entry;
-
 import misc.Settings;
-import model.FactureClient;
-import model.FactureFournisseur;
 import model.Produit;
 
 public class ProduitDAO {
@@ -87,6 +83,7 @@ public class ProduitDAO {
 	 */
 	public void mettreAJourQuantite(String nom, int modification) {
 		try {
+			System.out.println("on entre dans majQte");
 			s = con.prepareStatement("SELECT * FROM Produit WHERE nom = ?", 
 					ResultSet.TYPE_SCROLL_INSENSITIVE, 
 					ResultSet.CONCUR_UPDATABLE);
@@ -97,7 +94,9 @@ public class ProduitDAO {
 
 			if(result.next()) {
 				int quantite = result.getInt("quantite");
+				System.out.println("qte actuelle = " + quantite);
 				result.updateInt("quantite", quantite + modification);
+				System.out.println("qte new = " + quantite + modification);
 				result.updateRow();
 			}
 
@@ -137,28 +136,52 @@ public class ProduitDAO {
 		return null;
 	}
 
-	/**
-	 * Pour chaque produit acheté à un fournisseur, met à jour la quantité dans le magasin
-	 * @see mettreAJourQuantite
-	 * @param facture la facture fournisseur
-	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
-	 */
-	public void appliquerFactureFournisseur(FactureFournisseur facture) {
-		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
-			mettreAJourQuantite(entry.getKey().getNom(), entry.getValue());
-		}
-	}
+//	/**
+//	 * Pour chaque produit acheté à un fournisseur, met à jour la quantité dans le magasin
+//	 * @see mettreAJourQuantite
+//	 * @param facture la facture fournisseur
+//	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
+//	 */
+//	public void appliquerFactureFournisseur(FactureFournisseur facture) {
+//		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
+//			mettreAJourQuantite(entry.getKey().getNom(), entry.getValue());
+//		}
+//	}
+//
+//	/**
+//	 * Pour chaque produit vendu à un client, met à jour la quantité dans le magasin
+//	 * @see mettreAJourQuantite
+//	 * @param facture la facture client
+//	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
+//	 */
+//	public void appliquerFactureClient(FactureClient facture) {
+//		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
+//			mettreAJourQuantite(entry.getKey().getNom(), -entry.getValue());
+//		}
+//	}
+	
+	public Produit getProduitByName(String nom) {
+		try {
+			s = con.prepareStatement("SELECT * FROM Produit WHERE nom = ?");
+			s.setString(1, nom);
 
-	/**
-	 * Pour chaque produit vendu à un client, met à jour la quantité dans le magasin
-	 * @see mettreAJourQuantite
-	 * @param facture la facture client
-	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
-	 */
-	public void appliquerFactureClient(FactureClient facture) {
-		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
-			mettreAJourQuantite(entry.getKey().getNom(), -entry.getValue());
+			ResultSet result = s.executeQuery();
+
+			while(result.next()){   
+
+				return new Produit(
+						result.getString("nom"), 
+						result.getString("categorie"), 
+						result.getString("espece"),
+						result.getInt("prix"),
+						result.getInt("quantite"));
+			}
+
+		} catch(SQLException e) {
+			e.printStackTrace();
 		}
+
+		return null;
 	}
 }
 

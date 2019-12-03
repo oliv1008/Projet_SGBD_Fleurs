@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 public class FactureClient {
 
 	/*===== ATTRIBUTES =====*/
+	private int idFacture;
 	private int idClient;
 	private int montantFacture;
 	private HashMap<Produit, Integer> produits;
@@ -18,6 +19,10 @@ public class FactureClient {
 	}
 	
 	/*===== GETTERS AND SETTERS =====*/
+	public void setIdFacture(int idFacture) {
+		this.idFacture = idFacture;
+	}
+	
 	public int getIdClient() {
 		return idClient;
 	}
@@ -44,10 +49,26 @@ public class FactureClient {
 		return montantFacture;
 	}
 	
-	public void calculMontantFacture() {
+	public int calculMontantBrut() {
 		for(Entry<Produit, Integer> entry : produits.entrySet()) {
 			montantFacture += entry.getValue() * entry.getKey().getPrix();
 		}
+		return montantFacture;
+	}
+	
+	public int calculReduction(float reduction) {
+		montantFacture = (int)(montantFacture - reduction * montantFacture);
+		return montantFacture;
+	}
+	
+	public int calculTVA() {
+		montantFacture = (int)(montantFacture * 1.15);
+		return montantFacture;
+	}
+	
+	@Override
+	public String toString() {
+		return "Facture #" + idFacture + " (Client #" + idClient + ")";
 	}
 	
 }
