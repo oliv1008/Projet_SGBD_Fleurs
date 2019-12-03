@@ -35,6 +35,12 @@ public class FactureClient {
 		return produits;
 	}
 	
+	/**
+	 * Ajoute un produit à la facture d'un client.
+	 * Si le produit existe déjà, augmente la quantité voulu, sinon le créer et l'initialise d'une quantité.
+	 * @param produit Le produit à ajouter à la facture
+	 * @param quantite La quantité du produit à ajouter
+	 */
 	public void ajouterProduit(Produit produit, Integer quantite) {
 		if(produits.containsKey(produit)) {
 			int ancienneQte = produits.get(produit);
@@ -49,6 +55,11 @@ public class FactureClient {
 		return montantFacture;
 	}
 	
+	/**
+	 * Calcul le montant de la facture sans prendre en compte ni TVA ni réduction (i.e : la somme du prix de chaque Produit
+	 * contenu dans la facture)
+	 * @return Le montant de la facture sans réduction ni TVA.
+	 */
 	public int calculMontantBrut() {
 		for(Entry<Produit, Integer> entry : produits.entrySet()) {
 			montantFacture += entry.getValue() * entry.getKey().getPrix();
@@ -56,11 +67,20 @@ public class FactureClient {
 		return montantFacture;
 	}
 	
+	/**
+	 * Calcul le montant de la facture en prenant en compte une réduction.
+	 * @param reduction La réduction à appliqué sur le montant total.
+	 * @return Le montant de la facture en prenant en compte une réduction.
+	 */
 	public int calculReduction(float reduction) {
 		montantFacture = (int)(montantFacture - reduction * montantFacture);
 		return montantFacture;
 	}
 	
+	/**
+	 * Ajoute la TVA à 15 pourcent sur le montant total de la facture.
+	 * @return Le montant final de la facture avec la TVA ajouté.
+	 */
 	public int calculTVA() {
 		montantFacture = (int)(montantFacture * 1.15);
 		return montantFacture;

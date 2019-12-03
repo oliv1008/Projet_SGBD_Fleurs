@@ -35,6 +35,12 @@ public class FactureFournisseur {
 		return produits;
 	}
 	
+	/**
+	 * Ajoute un produit à la facture d'un client.
+	 * Si le produit existe déjà, augmente la quantité voulu, sinon le créer et l'initialise d'une quantité.
+	 * @param produit Le produit à ajouter à la facture
+	 * @param quantite La quantité du produit à ajouter
+	 */
 	public void ajouterProduit(Produit produit, Integer quantite) {
 		if(produits.containsKey(produit)) {
 			int ancienneQte = produits.get(produit);
@@ -49,6 +55,11 @@ public class FactureFournisseur {
 		return montantFacture;
 	}
 	
+	/**
+	 * Calcul le montant de la facture (i.e : la somme du prix de chaque Produit
+	 * contenu dans la facture)
+	 * @return Le montant de la facture.
+	 */
 	public int calculMontantFacture() {
 		for(Entry<Produit, Integer> entry : produits.entrySet()) {
 			montantFacture += entry.getValue() * entry.getKey().getPrix();
