@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Nov 29, 2019 at 04:18 PM
+-- Generation Time: Dec 03, 2019 at 01:19 PM
 -- Server version: 10.3.13-MariaDB-1:10.3.13+maria~bionic
 -- PHP Version: 7.2.19
 
@@ -32,9 +32,17 @@ CREATE TABLE `Client` (
   `idClient` int(11) NOT NULL,
   `nom` varchar(100) DEFAULT NULL,
   `prenom` varchar(100) DEFAULT NULL,
-  `addresse` varchar(100) DEFAULT NULL,
-  `reduction` int(11) DEFAULT NULL
+  `adresse` varchar(100) DEFAULT NULL,
+  `reduction` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Client`
+--
+
+INSERT INTO `Client` (`idClient`, `nom`, `prenom`, `adresse`, `reduction`) VALUES
+(1, 'Suchel', 'Tom', '26 Rue Jean Boyer', 0.1),
+(2, 'Millochau', 'Olivier', '123 Rue Victor Hugo', 0.5);
 
 -- --------------------------------------------------------
 
@@ -73,6 +81,14 @@ CREATE TABLE `Fournisseur` (
   `adresse` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `Fournisseur`
+--
+
+INSERT INTO `Fournisseur` (`idFournisseur`, `nom`, `prenom`, `adresse`) VALUES
+(1, 'Ferrari', 'Bruno', '99, rue des Dunes'),
+(2, 'Dominique', 'Gabois', '50, rue Reine Elisabeth');
+
 -- --------------------------------------------------------
 
 --
@@ -84,6 +100,16 @@ CREATE TABLE `FournitProduit` (
   `nomProduit` varchar(100) NOT NULL,
   `prix` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `FournitProduit`
+--
+
+INSERT INTO `FournitProduit` (`idFournisseur`, `nomProduit`, `prix`) VALUES
+(1, 'Fougere', 5),
+(1, 'Herbe', 2),
+(2, 'Coquelicot', 8),
+(2, 'Rose', 12);
 
 -- --------------------------------------------------------
 
@@ -99,6 +125,16 @@ CREATE TABLE `Produit` (
   `quantite` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `Produit`
+--
+
+INSERT INTO `Produit` (`nom`, `categorie`, `espece`, `prix`, `quantite`) VALUES
+('Coquelicot', 'fleur', 'coquelicotus', 15, 18),
+('Fougere', 'plante', 'fougerus ', 10, 4),
+('Herbe', 'plante', 'herbasaurus', 3, 10),
+('Rose', 'fleur', 'rosacae', 20, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -107,7 +143,8 @@ CREATE TABLE `Produit` (
 
 CREATE TABLE `ProduitsFactureClient` (
   `idFactureClient` int(11) NOT NULL,
-  `nomProduit` varchar(100) NOT NULL
+  `nomProduit` varchar(100) NOT NULL,
+  `quantite` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -118,7 +155,8 @@ CREATE TABLE `ProduitsFactureClient` (
 
 CREATE TABLE `ProduitsFactureFournisseur` (
   `idFactureFournisseur` int(11) NOT NULL,
-  `nomProduit` varchar(100) NOT NULL
+  `nomProduit` varchar(100) NOT NULL,
+  `quantite` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -186,25 +224,25 @@ ALTER TABLE `ProduitsFactureFournisseur`
 -- AUTO_INCREMENT for table `Client`
 --
 ALTER TABLE `Client`
-  MODIFY `idClient` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idClient` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `FactureClient`
 --
 ALTER TABLE `FactureClient`
-  MODIFY `idFactureClient` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFactureClient` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `FactureFournisseur`
 --
 ALTER TABLE `FactureFournisseur`
-  MODIFY `idFactureFournisseur` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFactureFournisseur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `Fournisseur`
 --
 ALTER TABLE `Fournisseur`
-  MODIFY `idFournisseur` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFournisseur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
