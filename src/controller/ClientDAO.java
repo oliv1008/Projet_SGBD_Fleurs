@@ -14,10 +14,20 @@ import model.Client;
 public class ClientDAO {
 
 	/*===== ATTRIBUTES =====*/
+	/**
+	 * La connection avec la base de données dont l'adresse est définie dans misc/Settings.
+	 */
 	private static Connection con;
+	/**
+	 * Un buffer contenant une requête SQL.
+	 */
 	private static PreparedStatement s;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Charge le driver jdbc et initialise une connection à la base de données dont l'adresse est définie
+	 * dans misc/Settings.
+	 */
 	public ClientDAO() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -40,8 +50,8 @@ public class ClientDAO {
 	/*===== METHODS =====*/
 
 	/**
-	 * Ajoute un client à la BDD
-	 * @param client le client à ajouter
+	 * Ajoute un client à la BDD.
+	 * @param client le client à ajouter.
 	 */
 	public void insererClient(Client client) throws Exception {
 		try {
@@ -76,6 +86,10 @@ public class ClientDAO {
 		}
 	}
 	
+	/**
+	 * Renvoie la liste de tout les clients enregistrés dans la base de données.
+	 * @return Une ArrayList contenant tout les clients enregistrés dans la base de données.
+	 */
 	public ArrayList<Client> listeClients(){
 		ArrayList<Client> clients = new ArrayList<Client>();
 		
@@ -103,6 +117,12 @@ public class ClientDAO {
 		return null;
 	}
 	
+	/**
+	 * Recherche un client par son ID.
+	 * 
+	 * @param id L'ID du client à rechercher
+	 * @return Un Client dont l'ID correspond à celui passé en paramètre.
+	 */
 	public Client getClientById(int id) {
 		try {
 			s = con.prepareStatement("SELECT * FROM Client WHERE idClient = ?");

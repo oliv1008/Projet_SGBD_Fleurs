@@ -16,10 +16,20 @@ import model.Produit;
 public class FactureFournisseurDAO {
 
 	/*===== ATTRIBUTES =====*/
+	/**
+	 * La connection avec la base de données dont l'adresse est définie dans misc/Settings.
+	 */
 	private static Connection con;
+	/**
+	 * Un buffer contenant une requête SQL.
+	 */
 	private static PreparedStatement s;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Charge le driver jdbc et initialise une connection à la base de données dont l'adresse est définie
+	 * dans misc/Settings.
+	 */
 	public FactureFournisseurDAO() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -42,8 +52,8 @@ public class FactureFournisseurDAO {
 	/*===== METHODS =====*/
 
 	/**
-	 * Ajoute un facture fournisseur à la BDD
-	 * @param facture la facture à ajouter
+	 * Ajoute une facture fournisseur à la BDD.
+	 * @param facture la facture à ajouter.
 	 */
 	public void insererFacture(FactureFournisseur facture) {
 		try {
@@ -90,6 +100,10 @@ public class FactureFournisseurDAO {
 		}
 	}
 	
+	/**
+	 * Renvoie la liste de toutes les factures fournisseurs enregistrées dans la base de données.
+	 * @return Une ArrayList contenant toutes les factures fournisseurs enregistrées dans la base de données.
+	 */
 	public ArrayList<FactureFournisseur> listeFactureFournisseur(){
 		
 		ArrayList<FactureFournisseur> factures = new ArrayList<FactureFournisseur>();

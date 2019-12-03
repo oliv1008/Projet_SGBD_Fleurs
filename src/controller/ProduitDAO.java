@@ -13,10 +13,20 @@ import model.Produit;
 public class ProduitDAO {
 
 	/*===== ATTRIBUTES =====*/
+	/**
+	 * La connection avec la base de données dont l'adresse est définie dans misc/Settings.
+	 */
 	private static Connection con;
+	/**
+	 * Un buffer contenant une requête SQL.
+	 */
 	private static PreparedStatement s;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Charge le driver jdbc et initialise une connection à la base de données dont l'adresse est définie
+	 * dans misc/Settings.
+	 */
 	public ProduitDAO() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -136,30 +146,12 @@ public class ProduitDAO {
 		return null;
 	}
 
-//	/**
-//	 * Pour chaque produit acheté à un fournisseur, met à jour la quantité dans le magasin
-//	 * @see mettreAJourQuantite
-//	 * @param facture la facture fournisseur
-//	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
-//	 */
-//	public void appliquerFactureFournisseur(FactureFournisseur facture) {
-//		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
-//			mettreAJourQuantite(entry.getKey().getNom(), entry.getValue());
-//		}
-//	}
-//
-//	/**
-//	 * Pour chaque produit vendu à un client, met à jour la quantité dans le magasin
-//	 * @see mettreAJourQuantite
-//	 * @param facture la facture client
-//	 * TODO : EST CE QUE Y'AURAIT BESOIN D'UN COMMIT ICI ???
-//	 */
-//	public void appliquerFactureClient(FactureClient facture) {
-//		for(Entry<Produit, Integer> entry : facture.getProduits().entrySet()) {
-//			mettreAJourQuantite(entry.getKey().getNom(), -entry.getValue());
-//		}
-//	}
-	
+	/**
+	 * Recherche un Produit par son nom.
+	 * 
+	 * @param nom Le nom du produit à rechercher.
+	 * @return Un Produit dont le nom correspond à celui passé en paramètre.
+	 */
 	public Produit getProduitByName(String nom) {
 		try {
 			s = con.prepareStatement("SELECT * FROM Produit WHERE nom = ?");

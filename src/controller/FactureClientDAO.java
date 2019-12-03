@@ -16,10 +16,20 @@ import model.Produit;
 public class FactureClientDAO {
 
 	/*===== ATTRIBUTES =====*/
+	/**
+	 * La connection avec la base de données dont l'adresse est définie dans misc/Settings.
+	 */
 	private static Connection con;
+	/**
+	 * Un buffer contenant une requête SQL.
+	 */
 	private static PreparedStatement s;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Charge le driver jdbc et initialise une connection à la base de données dont l'adresse est définie
+	 * dans misc/Settings.
+	 */
 	public FactureClientDAO() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -42,7 +52,7 @@ public class FactureClientDAO {
 	/*===== METHODS =====*/
 
 	/**
-	 * Ajoute un facture client à la BDD
+	 * Ajoute une facture client à la BDD
 	 * @param facture la facture à ajouter
 	 */
 	public void insererFacture(FactureClient facture) {
@@ -80,16 +90,17 @@ public class FactureClientDAO {
 				produitDAO.mettreAJourQuantite(entry.getKey().getNom(), -entry.getValue());	
 			}
 
-			//			con.commit();	// Est ce que y'a vrmt besoin du commit ?
-
 			System.out.println("Ajout d'une facture client à la BDD");
 
 		} catch(SQLException e) {
 			e.printStackTrace();
-			//			con.rollback(); ?
 		}
 	}
 
+	/**
+	 * Renvoie la liste de toutes les factures clients enregistrées dans la base de données.
+	 * @return Une ArrayList contenant toutes les factures clients enregistrées dans la base de données.
+	 */
 	public ArrayList<FactureClient> listeFactureClient(){
 		
 		ArrayList<FactureClient> factures = new ArrayList<FactureClient>();

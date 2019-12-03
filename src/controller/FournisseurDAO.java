@@ -15,10 +15,20 @@ import model.Produit;
 public class FournisseurDAO {
 
 	/*===== ATTRIBUTES =====*/
+	/**
+	 * La connection avec la base de données dont l'adresse est définie dans misc/Settings.
+	 */
 	private static Connection con;
+	/**
+	 * Un buffer contenant une requête SQL.
+	 */
 	private static PreparedStatement s;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Charge le driver jdbc et initialise une connection à la base de données dont l'adresse est définie
+	 * dans misc/Settings.
+	 */
 	public FournisseurDAO() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -76,6 +86,10 @@ public class FournisseurDAO {
 		}
 	}
 	
+	/**
+	 * Renvoie la liste de tout les fournisseurs enregistrés dans la base de données.
+	 * @return Une ArrayList contenant tout les fournisseurs enregistrés dans la base de données.
+	 */
 	public ArrayList<Fournisseur> listeFournisseurs(){
 		ArrayList<Fournisseur> fournisseurs = new ArrayList<Fournisseur>();
 		
@@ -100,6 +114,11 @@ public class FournisseurDAO {
 		return null;
 	}
 	
+	/**
+	 * Renvoie la liste de tous les produits fourni par un fournisseur enregistrés dans la base de données.
+	 * @param idFournisseur L'ID du fournisseur dont on veut obtenir la liste des produits qu'il fournit
+	 * @return Une ArrayList contenant tous les produits fourni par le fournisseur dont l'ID correspond au paramètres idFournisseur dans la base de données.
+	 */
 	public ArrayList<Produit> listeProduitsParFournisseur(int idFournisseur){
 		ArrayList<Produit> produits = new ArrayList<Produit>();
 		
@@ -130,6 +149,13 @@ public class FournisseurDAO {
 		return null;
 	}
 	
+	
+	/**
+	 * Recherche un fournisseur par son ID.
+	 * 
+	 * @param id L'ID du fournisseur à rechercher
+	 * @return Un Fournisseur dont l'ID correspond à celui passé en paramètre.
+	 */
 	public Fournisseur getFournisseurById(int id) {
 		try {
 			s = con.prepareStatement("SELECT * FROM Fournisseur WHERE idFournisseur = ?");
