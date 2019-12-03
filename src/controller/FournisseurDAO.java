@@ -39,42 +39,6 @@ public class FournisseurDAO {
 	}
 
 	/*===== METHODS =====*/
-
-	/**
-	 * Ajoute un fournisseur à la BDD
-	 * @param fournisseur le client à ajouter
-	 */
-	public void insererFournisseur(Fournisseur fournisseur) throws Exception {
-		try {
-			s = con.prepareStatement("INSERT INTO Fournisseur (nom, prenom, adresse) VALUES (?, ?, ?)");
-			s.setString(1, fournisseur.getNom());
-			s.setString(2, fournisseur.getPrenom());
-			s.setString(3, fournisseur.getAdresse());
-			s.executeUpdate();
-			s.close();
-			System.out.println("Ajout d'un fournisseur à la BDD");
-		} catch(SQLIntegrityConstraintViolationException e) {
-			throw new Exception("Ce fournisseur (" + fournisseur.getNom() + ") est déjà dans la BDD");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Supprime un fournisseur de la BDD
-	 * @param idFournisseur l'id du fournisseur
-	 */
-	public void supprimerFournisseur(int idFournisseur) {
-		try {
-			s = con.prepareStatement("DELETE FROM Fournisseur WHERE idFournisseur = ?");
-			s.setInt(1, idFournisseur);
-			s.executeUpdate();
-			s.close();
-			System.out.println("Suppression d'un fournisseur de la BDD");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public ArrayList<Fournisseur> listeFournisseurs(){
 		ArrayList<Fournisseur> fournisseurs = new ArrayList<Fournisseur>();

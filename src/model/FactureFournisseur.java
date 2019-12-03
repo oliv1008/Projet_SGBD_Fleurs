@@ -49,10 +49,11 @@ public class FactureFournisseur {
 		return montantFacture;
 	}
 	
-	public void calculMontantFacture() {
+	public int calculMontantFacture() {
 		for(Entry<Produit, Integer> entry : produits.entrySet()) {
 			montantFacture += entry.getValue() * entry.getKey().getPrix();
 		}
+		return montantFacture;
 	}
 	
 	@Override

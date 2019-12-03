@@ -203,12 +203,9 @@ public class FactureFournisseurPanel extends JPanel {
 		creerFacture.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				// On met à jour l'objet facture
-				facture.calculMontantFacture();
-
 				// On met à jour l'affichage de la facture
 				log.append("");
-				log.append("Montant total = " + facture.getMontantFacture() + "€");
+				log.append("Montant total = " + facture.calculMontantFacture() + "€");
 				log.append("");
 				log.append("Facture enregistrée");
 
