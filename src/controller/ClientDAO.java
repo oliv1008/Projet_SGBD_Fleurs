@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
 import misc.Settings;
@@ -48,44 +47,6 @@ public class ClientDAO {
 	}
 
 	/*===== METHODS =====*/
-
-	/**
-	 * Ajoute un client à la BDD.
-	 * @param client le client à ajouter.
-	 */
-	public void insererClient(Client client) throws Exception {
-		try {
-			s = con.prepareStatement("INSERT INTO Client (nom, prenom, adresse, reduction) VALUES (?, ?, ?, ?)");
-			s.setString(1, client.getNom());
-			s.setString(2, client.getPrenom());
-			s.setString(3, client.getAdresse());
-			s.setFloat(4, client.getReduction());
-			s.executeUpdate();
-			s.close();
-			System.out.println("Ajout d'un client à la BDD");
-		} catch(SQLIntegrityConstraintViolationException e) {
-			throw new Exception("Ce client (" + client.getNom() + ") est déjà dans la BDD");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Supprime un client de la BDD
-	 * @param idClient l'id du client
-	 */
-	public void supprimerClient(int idClient) {
-		try {
-			s = con.prepareStatement("DELETE FROM Client WHERE idClient = ?");
-			s.setInt(1, idClient);
-			s.executeUpdate();
-			s.close();
-			System.out.println("Suppression d'un client de la BDD");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	/**
 	 * Renvoie la liste de tout les clients enregistrés dans la base de données.
 	 * @return Une ArrayList contenant tout les clients enregistrés dans la base de données.

@@ -49,44 +49,6 @@ public class ProduitDAO {
 	/*===== METHODS =====*/
 
 	/**
-	 * Ajoute un produit au catalogue
-	 * @param produit le produit à ajouter
-	 */
-	public void insererProduit(Produit produit) throws Exception {
-		try {
-			s = con.prepareStatement("INSERT INTO Produit (nom, categorie, espece, prix, quantite) VALUES (?, ?, ?, ?, ?)");
-			s.setString(1, produit.getNom());
-			s.setString(2, produit.getCategorie());
-			s.setString(3, produit.getEspece());
-			s.setInt(4, produit.getPrix());
-			s.setInt(5, produit.getStock());
-			s.executeUpdate();
-			s.close();
-			System.out.println("Ajout d'un produit à la BDD");
-		} catch(SQLIntegrityConstraintViolationException e) {
-			throw new Exception("Ce produit (" + produit.getNom() + ") est déjà dans la BDD");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Supprime un produit de la BDD
-	 * @param nom le nom du produit
-	 */
-	public void supprimerProduit(String nom) {
-		try {
-			s = con.prepareStatement("DELETE FROM Produit WHERE nom = ?");
-			s.setString(1, nom);
-			s.executeUpdate();
-			s.close();
-			System.out.println("Suppression d'un produit de la BDD");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Met à jour la quantité d'un produit dans la BDD
 	 * @param nom le nom du produit
 	 * @param modification la modification de quantité, positive ou négative
@@ -145,7 +107,7 @@ public class ProduitDAO {
 
 		return null;
 	}
-
+	
 	/**
 	 * Recherche un Produit par son nom.
 	 * 

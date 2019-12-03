@@ -18,7 +18,6 @@ import controller.ClientDAO;
 import controller.FactureClientDAO;
 import controller.FactureFournisseurDAO;
 import controller.FournisseurDAO;
-import model.Client;
 import model.FactureClient;
 import model.FactureFournisseur;
 import model.Produit;
@@ -167,6 +166,10 @@ public class HistoriqueFacturePanel extends JPanel {
 					for(Entry<Produit, Integer> entry : f.getProduits().entrySet()) {
 						log.append("- " + entry.getKey() + "\t(x" + entry.getValue() + ")");
 					}
+					
+					// On affiche les informations sur le prix total
+					log.append("");
+					log.append("Montant total : \t" + f.calculMontantFacture() + "€");
 				}
 			}
 		});
